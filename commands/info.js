@@ -22,7 +22,8 @@ export async function info(message, client) {
 > ┋ *ᴜsᴇʀ* : ${username}
 > ┋ *ᴅᴀʏ* : ${daysOfWeek[today.getDay()]}
 > ┋ *ᴅᴀᴛᴇ* : ${today.getDate()}/${today.getMonth()+1}/${today.getFullYear()}
-> ┋ *𝚋𝚘𝚝 𝚝𝚐* : t.me/KATASHIE_bot
+> ┋ *𝚋𝚘𝚝 𝚝𝚐* : t.me/katashie2_bot
+> ┋ *𝚋𝚘𝚝 𝚠𝚎𝚋* : https://katashie.pagnol.xyz
 > ┋ *ᴘʟᴜɢɪɴs* : 180+
 > ┗▣
 > ┏┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅
