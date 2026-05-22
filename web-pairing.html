@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KATASHIE — Déployer le Bot</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@600;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:       #080808;
+      --card:     #0d0d0d;
+      --border:   #1e1e1e;
+      --green:    #25D366;
+      --green-dim:#1a9e4a;
+      --text:     #f2f2f2;
+      --muted:    #888;
+      --red:      #e74c3c;
+      --mono:     'Space Mono', monospace;
+      --sans:     'Syne', sans-serif;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 16px;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* Ambient glow blobs */
+    body::before, body::after {
+      content: '';
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(120px);
+      pointer-events: none;
+      z-index: 0;
+    }
+    body::before {
+      width: 400px; height: 400px;
+      background: rgba(37,211,102,0.07);
+      top: 10%; left: 10%;
+    }
+    body::after {
+      width: 350px; height: 350px;
+      background: rgba(37,211,102,0.04);
+      bottom: 10%; right: 10%;
+    }
+
+    .wrap {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 440px;
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+    }
+
+    /* ── HEADER ── */
+    .header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+      text-align: center;
+    }
+
+    .logo-wrap {
+      position: relative;
+      width: 80px; height: 80px;
+    }
+    .logo-wrap::before {
+      content: '';
+      position: absolute;
+      inset: -8px;
+      background: rgba(37,211,102,0.15);
+      border-radius: 50%;
+      filter: blur(16px);
+    }
+    .logo {
+      width: 80px; height: 80px;
+      background: var(--card);
+      border: 1px solid rgba(37,211,102,0.3);
+      border-radius: 20px;
+      display: flex; align-items: center; justify-content: center;
+      position: relative;
+      box-shadow: 0 0 18px rgba(37,211,102,0.25);
+    }
+    .logo svg { width: 40px; height: 40px; fill: var(--green); }
+
+    h1 {
+      font-family: var(--sans);
+      font-size: 2.6rem;
+      font-weight: 800;
+      letter-spacing: 2px;
+      color: var(--text);
+      text-shadow: 0 0 20px rgba(37,211,102,0.4);
+    }
+
+    .tagline {
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      color: var(--muted);
+      display: flex; align-items: center; gap: 6px;
+    }
+    .cursor::after {
+      content: '|';
+      color: var(--green);
+      animation: blink 1s step-end infinite;
+    }
+    @keyframes blink { 50% { opacity: 0; } }
+
+    .badges {
+      display: flex; gap: 8px; flex-wrap: wrap; justify-content: center;
+    }
+    .badge {
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      padding: 4px 10px;
+      border-radius: 4px;
+      border: 1px solid;
+      text-decoration: none;
+      display: inline-flex; align-items: center; gap: 4px;
+      transition: background 0.2s;
+    }
+    .badge-green {
+      border-color: rgba(37,211,102,0.25);
+      background: rgba(37,211,102,0.06);
+      color: var(--text);
+    }
+    .badge-blue {
+      border-color: rgba(59,130,246,0.3);
+      background: rgba(59,130,246,0.08);
+      color: #60a5fa;
+    }
+    .badge-blue:hover { background: rgba(59,130,246,0.16); }
+
+    /* ── CARD ── */
+    .card {
+      background: var(--card);
+      border: 1px solid rgba(37,211,102,0.15);
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+      position: relative;
+    }
+    .card-top-bar {
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--green), transparent);
+      opacity: 0.5;
+    }
+    .card-body { padding: 28px 24px; }
+
+    .card-title {
+      font-family: var(--mono);
+      font-size: 0.95rem;
+      font-weight: 700;
+      display: flex; align-items: center; gap: 8px;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+    .card-title svg { width: 18px; height: 18px; fill: var(--green); }
+
+    .card-desc {
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-bottom: 24px;
+      line-height: 1.5;
+    }
+
+    /* ── FORM ── */
+    label {
+      display: block;
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    .input-wrap {
+      position: relative;
+      margin-bottom: 6px;
+    }
+    .input-plus {
+      position: absolute;
+      left: 12px; top: 50%;
+      transform: translateY(-50%);
+      font-family: var(--mono);
+      color: var(--muted);
+      font-size: 1rem;
+      pointer-events: none;
+    }
+    input[type="tel"] {
+      width: 100%;
+      height: 50px;
+      background: var(--bg);
+      border: 1px solid rgba(37,211,102,0.2);
+      border-radius: 6px;
+      color: var(--text);
+      font-family: var(--mono);
+      font-size: 1rem;
+      padding: 0 14px 0 34px;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    input[type="tel"]:focus {
+      border-color: var(--green);
+      box-shadow: 0 0 0 3px rgba(37,211,102,0.12);
+    }
+    input[type="tel"]:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .field-error {
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      color: var(--red);
+      margin-top: 4px;
+      display: none;
+    }
+    .field-error.show { display: block; }
+
+    .btn {
+      width: 100%;
+      height: 50px;
+      margin-top: 18px;
+      background: var(--green);
+      color: #000;
+      font-family: var(--mono);
+      font-size: 0.9rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      transition: box-shadow 0.2s, opacity 0.2s;
+    }
+    .btn:hover:not(:disabled) {
+      box-shadow: 0 0 28px rgba(37,211,102,0.5);
+    }
+    .btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+    .spin {
+      width: 18px; height: 18px;
+      border: 2px solid rgba(0,0,0,0.3);
+      border-top-color: #000;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      display: none;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .btn.loading .spin { display: block; }
+    .btn.loading .btn-text { display: none; }
+
+    .loading-note {
+      text-align: center;
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      color: rgba(37,211,102,0.6);
+      margin-top: 10px;
+      display: none;
+      animation: pulse 1.5s ease-in-out infinite;
+    }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+    .loading-note.show { display: block; }
+
+    /* ── ERROR ALERT ── */
+    .alert-error {
+      background: rgba(231,76,60,0.08);
+      border: 1px solid rgba(231,76,60,0.25);
+      border-radius: 6px;
+      padding: 12px 16px;
+      font-family: var(--mono);
+      font-size: 0.78rem;
+      color: var(--red);
+      margin-top: 14px;
+      display: none;
+      animation: slideIn 0.2s ease;
+    }
+    .alert-error.show { display: block; }
+    .alert-error strong { display: block; margin-bottom: 4px; }
+    @keyframes slideIn { from { transform: translateY(-6px); opacity: 0; } }
+
+    /* ── SUCCESS ── */
+    .success-wrap {
+      display: none;
+      flex-direction: column;
+      gap: 18px;
+      animation: fadeIn 0.4s ease;
+    }
+    .success-wrap.show { display: flex; }
+    @keyframes fadeIn { from { opacity: 0; transform: scale(0.97); } }
+
+    .code-box {
+      background: var(--bg);
+      border: 1px solid rgba(37,211,102,0.3);
+      border-radius: 8px;
+      padding: 24px;
+      text-align: center;
+    }
+    .code-label {
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+    .code-value {
+      font-family: var(--mono);
+      font-size: 3rem;
+      font-weight: 700;
+      letter-spacing: 6px;
+      color: var(--green);
+      text-shadow: 0 0 16px rgba(37,211,102,0.4);
+      user-select: all;
+    }
+
+    .btn-copy {
+      width: 100%;
+      height: 50px;
+      background: var(--green);
+      color: #000;
+      font-family: var(--mono);
+      font-size: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      transition: box-shadow 0.2s;
+    }
+    .btn-copy:hover { box-shadow: 0 0 28px rgba(37,211,102,0.5); }
+    .btn-copy svg { width: 18px; height: 18px; }
+
+    .instructions {
+      background: rgba(255,255,255,0.03);
+      border-radius: 6px;
+      padding: 16px;
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      color: var(--muted);
+      line-height: 1.8;
+    }
+    .instructions strong {
+      color: var(--text);
+      display: flex; align-items: center; gap: 6px;
+      margin-bottom: 8px;
+    }
+    .instructions ol { list-style: decimal; padding-left: 18px; }
+
+    .btn-reset {
+      width: 100%;
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      height: 40px;
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      letter-spacing: 1px;
+      cursor: pointer;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .btn-reset:hover { color: var(--text); border-color: var(--muted); }
+
+    /* ── FOOTER ── */
+    .footer {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+    }
+    .footer-label {
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: var(--muted);
+    }
+    .footer-links {
+      display: flex; gap: 20px; flex-wrap: wrap; justify-content: center;
+    }
+    .footer-links a {
+      font-family: var(--mono);
+      font-size: 0.8rem;
+      color: var(--muted);
+      text-decoration: none;
+      display: flex; align-items: center; gap: 5px;
+      transition: color 0.2s;
+    }
+    .footer-links a:hover { color: var(--green); }
+    .footer-links a svg { width: 14px; height: 14px; }
+  </style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="logo-wrap">
+      <div class="logo">
+        <!-- WhatsApp icon -->
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12.001 2C6.479 2 2.002 6.477 2.002 12c0 1.873.518 3.623 1.416 5.127L2 22l5.013-1.396A9.944 9.944 0 0 0 12.001 22C17.523 22 22 17.523 22 12S17.523 2 12.001 2zm0 1.8A8.2 8.2 0 0 1 20.2 12a8.2 8.2 0 0 1-8.199 8.2 8.158 8.158 0 0 1-4.3-1.22l-.307-.19-3.182.886.893-3.103-.21-.32A8.157 8.157 0 0 1 3.8 12 8.2 8.2 0 0 1 12.001 3.8zm-2.29 4.3c-.197 0-.516.073-.787.368-.27.294-1.03 1.006-1.03 2.452 0 1.446 1.054 2.843 1.2 3.04.148.196 2.074 3.166 5.023 4.31.7.27 1.247.43 1.673.55.703.2 1.344.171 1.85.104.564-.075 1.737-.71 1.982-1.396.245-.687.245-1.274.172-1.397-.074-.123-.27-.196-.565-.344-.294-.147-1.737-.857-2.006-.955-.27-.098-.466-.148-.662.148-.196.294-.76.956-.932 1.152-.172.196-.344.22-.638.073-.294-.147-1.244-.459-2.369-1.462-.876-.781-1.467-1.746-1.64-2.04-.17-.295-.017-.454.13-.6.131-.133.294-.344.44-.516.147-.172.196-.295.295-.49.098-.196.049-.369-.025-.516-.073-.147-.661-1.595-.905-2.183-.245-.588-.49-.49-.661-.49z"/>
+        </svg>
+      </div>
+    </div>
+    <h1>KATASHIE</h1>
+    <p class="tagline">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="2"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+      v5.4.0&nbsp;<span class="cursor">INITIALIZING</span>
+    </p>
+    <div class="badges">
+      <span class="badge badge-green">
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        OWNER: ABESS-MD
+      </span>
+      <a href="https://t.me/abess237" target="_blank" class="badge badge-blue">
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L7.88 13.944l-2.967-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.833.94-.001-.001-.001 0 0 0l-.528-.325z"/></svg>
+        @abess237
+      </a>
+    </div>
+  </div>
+
+  <!-- CARD -->
+  <div class="card">
+    <div class="card-top-bar"></div>
+    <div class="card-body">
+      <div class="card-title">
+        <svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+        DEPLOY INSTANCE
+      </div>
+      <p class="card-desc">Entrez votre numéro WhatsApp avec l'indicatif pays pour recevoir votre code de connexion.</p>
+
+      <!-- FORM -->
+      <div id="form-section">
+        <label for="phone">Numéro WhatsApp</label>
+        <div class="input-wrap">
+          <span class="input-plus">+</span>
+          <input type="tel" id="phone" placeholder="237696533299" inputmode="numeric" autocomplete="off" />
+        </div>
+        <div class="field-error" id="field-error">Le numéro doit contenir uniquement des chiffres (7 à 15 chiffres)</div>
+
+        <div class="alert-error" id="alert-error">
+          <strong>Erreur de connexion</strong>
+          <span id="error-msg"></span>
+        </div>
+
+        <button class="btn" id="submit-btn" onclick="submitForm()">
+          <div class="spin"></div>
+          <span class="btn-text">OBTENIR LE CODE</span>
+        </button>
+
+        <div class="loading-note" id="loading-note">
+          Connexion en cours... cela peut prendre jusqu'à 30 secondes.
+        </div>
+      </div>
+
+      <!-- SUCCESS -->
+      <div class="success-wrap" id="success-section">
+        <div class="code-box">
+          <div class="code-label">Code de connexion généré</div>
+          <div class="code-value" id="code-display">----</div>
+        </div>
+        <button class="btn-copy" id="copy-btn" onclick="copyCode()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" id="copy-icon">
+            <rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+          </svg>
+          <span id="copy-text">COPIER LE CODE</span>
+        </button>
+        <div class="instructions">
+          <strong>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+            INSTRUCTIONS :
+          </strong>
+          <ol>
+            <li>Ouvrez WhatsApp sur votre téléphone principal</li>
+            <li>Appuyez sur Menu &gt; Appareils liés</li>
+            <li>Appuyez sur "Lier un appareil"</li>
+            <li>Appuyez sur "Lier avec un numéro de téléphone"</li>
+            <li>Saisissez le code affiché ci-dessus</li>
+          </ol>
+        </div>
+        <button class="btn-reset" onclick="resetForm()">ASSOCIER UN AUTRE NUMÉRO</button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <span class="footer-label">Liens communautaires</span>
+    <div class="footer-links">
+      <a href="https://t.me/katashiebot" target="_blank">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L7.88 13.944l-2.967-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.833.94l-.528-.325z"/></svg>
+        Groupe
+      </a>
+      <a href="https://t.me/katashiev2" target="_blank">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L7.88 13.944l-2.967-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.833.94l-.528-.325z"/></svg>
+        Channel
+      </a>
+      <a href="https://whatsapp.com/channel/0029VbCg7Ki3AzNNbwOb2Q30" target="_blank">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.001 2C6.479 2 2.002 6.477 2.002 12c0 1.873.518 3.623 1.416 5.127L2 22l5.013-1.396A9.944 9.944 0 0 0 12.001 22C17.523 22 22 17.523 22 12S17.523 2 12.001 2z"/></svg>
+        Updates
+      </a>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  // ⚠️ REMPLACEZ CETTE URL PAR L'ADRESSE DE VOTRE SERVEUR
+  const API_URL = "http://80.241.213.208:2002/pair";
+  // Exemple si déployé : const API_URL = "https://mon-bot.exemple.com/pair";
+
+  let generatedCode = "";
+
+  function submitForm() {
+    const input = document.getElementById("phone");
+    const fieldError = document.getElementById("field-error");
+    const alertError = document.getElementById("alert-error");
+    const btn = document.getElementById("submit-btn");
+    const loadingNote = document.getElementById("loading-note");
+
+    // Reset errors
+    fieldError.classList.remove("show");
+    alertError.classList.remove("show");
+
+    const number = input.value.replace(/\D/g, "");
+
+    if (number.length < 7 || number.length > 15) {
+      fieldError.classList.add("show");
+      return;
+    }
+
+    // Loading state
+    btn.disabled = true;
+    btn.classList.add("loading");
+    loadingNote.classList.add("show");
+    input.disabled = true;
+
+    fetch(API_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ number })
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.error) throw new Error(data.error);
+      generatedCode = data.code;
+      showSuccess(formatCode(data.code));
+    })
+    .catch(err => {
+      document.getElementById("error-msg").textContent = err.message || "Impossible de générer le code. Vérifiez votre numéro.";
+      alertError.classList.add("show");
+      btn.disabled = false;
+      btn.classList.remove("loading");
+      loadingNote.classList.remove("show");
+      input.disabled = false;
+    });
+  }
+
+  function formatCode(code) {
+    const clean = code.replace(/-/g, "");
+    if (clean.length > 4) return clean.slice(0,4) + "-" + clean.slice(4);
+    return clean;
+  }
+
+  function showSuccess(code) {
+    document.getElementById("form-section").style.display = "none";
+    document.getElementById("code-display").textContent = code;
+    document.getElementById("success-section").classList.add("show");
+  }
+
+  function copyCode() {
+    navigator.clipboard.writeText(generatedCode).then(() => {
+      document.getElementById("copy-text").textContent = "COPIE !";
+      setTimeout(() => {
+        document.getElementById("copy-text").textContent = "COPIER LE CODE";
+      }, 2000);
+    });
+  }
+
+  function resetForm() {
+    document.getElementById("success-section").classList.remove("show");
+    document.getElementById("form-section").style.display = "";
+    document.getElementById("phone").value = "";
+    document.getElementById("submit-btn").disabled = false;
+    document.getElementById("submit-btn").classList.remove("loading");
+    document.getElementById("loading-note").classList.remove("show");
+    document.getElementById("phone").disabled = false;
+    generatedCode = "";
+  }
+
+  // Permet de soumettre avec la touche Entrée
+  document.getElementById("phone").addEventListener("keydown", e => {
+    if (e.key === "Enter") submitForm();
+  });
+</script>
+</body>
+</html>

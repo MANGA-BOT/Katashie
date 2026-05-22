@@ -1,0 +1,144 @@
+{
+  "users": {
+    "237698626266": {
+      "sudoList": [],
+      "tagAudioPath": "tag.mp3",
+      "antilink": false,
+      "response": true,
+      "autoreact": false,
+      "prefix": "",
+      "welcome": false,
+      "record": false,
+      "type": false,
+      "like": false,
+      "online": false
+    },
+    "root": {
+      "primary": "237640920145"
+    },
+    "237640920145": {
+      "sudoList": [
+        "101585287909453",
+        "243173163065484",
+        "54791602450516"
+      ],
+      "antilink": false,
+      "response": false,
+      "autoreact": false,
+      "prefix": "/",
+      "welcome": false,
+      "record": false,
+      "type": true,
+      "like": false,
+      "online": false,
+      "tagMediaType": "sticker",
+      "tagMediaPath": "/home/container/237640920145_tag_sticker.webp",
+      "autosticker": true,
+      "antistatus": true
+    },
+    "237656274406": {
+      "sudoList": [],
+      "tagAudioPath": "tag.mp3",
+      "antilink": false,
+      "response": true,
+      "autoreact": false,
+      "prefix": ".",
+      "welcome": false,
+      "record": false,
+      "type": false,
+      "like": false,
+      "online": false
+    },
+    "237650712467": {
+      "prefix": "/"
+    },
+    "237682229367": {
+      "prefix": ".",
+      "online": false,
+      "autoreact": false,
+      "autotype": false,
+      "autorecord": false,
+      "welcome": false,
+      "antilink": false,
+      "autosticker": false,
+      "sudoList": []
+    },
+    "50948764595": {
+      "prefix": ".",
+      "online": false,
+      "autoreact": false,
+      "autotype": false,
+      "autorecord": false,
+      "welcome": false,
+      "antilink": false,
+      "autosticker": false,
+      "sudoList": []
+    },
+    "6288708057283": {
+      "prefix": ".",
+      "online": false,
+      "autoreact": false,
+      "autotype": false,
+      "autorecord": false,
+      "welcome": false,
+      "antilink": false,
+      "autosticker": false,
+      "sudoList": []
+    },
+    "601169658194": {
+      "prefix": ".",
+      "online": false,
+      "autoreact": false,
+      "autotype": false,
+      "autorecord": false,
+      "welcome": false,
+      "antilink": false,
+      "autosticker": false,
+      "sudoList": []
+    },
+    "237671281938": {
+      "prefix": ".",
+      "online": false,
+      "autoreact": false,
+      "autotype": false,
+      "autorecord": false,
+      "welcome": false,
+      "antilink": false,
+      "autosticker": false,
+      "sudoList": []
+    },
+    "18765688105": {
+      "prefix": ".",
+      "online": false,
+      "autoreact": false,
+      "autotype": false,
+      "autorecord": false,
+      "welcome": false,
+      "antilink": false,
+      "autosticker": false,
+      "sudoList": []
+    }
+  },
+  "groupSettings": {
+    "120363417549659551@g.us": {
+      "antistatus": true
+    }
+  },
+  "autoStatus": {
+    "enabled": true,
+    "reactOn": false
+  },
+  "antistatusWarns": {
+    "120363417549659551@g.us": {
+      "68020101771446@lid": 1,
+      "275608722526385@lid": 1,
+      "23867854741523@lid": 1,
+      "34897297207416@lid": 1,
+      "273328111673438@lid": 1,
+      "54791602450516@lid": 1
+    }
+  },
+  "antistatusGroups": {
+    "120363417549659551@g.us": true
+  }
+}
