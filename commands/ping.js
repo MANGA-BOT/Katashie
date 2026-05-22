@@ -1,37 +1,12 @@
-// commands/ping.js
-import channelSender from './channelSender.js';
-import fs from 'fs';
-import path from 'path';
+// 𝚌𝚘𝚖𝚖𝚊𝚗𝚍𝚜/𝚙𝚒𝚗𝚐.𝚓𝚜
+𝚒𝚖𝚙𝚘𝚛𝚝 𝚏𝚜 𝚏𝚛𝚘𝚖 '𝚏𝚜';
+𝚒𝚖𝚙𝚘𝚛𝚝 𝚙𝚊𝚝𝚑 𝚏𝚛𝚘𝚖 '𝚙𝚊𝚝𝚑';
+𝚒𝚖𝚙𝚘𝚛𝚝 { 𝚜𝚎𝚗𝚍𝚂𝚝𝚢𝚕𝚎𝚍 } 𝚏𝚛𝚘𝚖 '../𝚎𝚟𝚎𝚗𝚝𝚜/𝚖𝚎𝚜𝚜𝚊𝚐𝚎𝙷𝚊𝚗𝚍𝚕𝚎𝚛.𝚓𝚜';
 
-export async function pingCommand(message, client) {
-    const msgTimestamp = message.messageTimestamp * 1000;
-    const latency = Date.now() - msgTimestamp;
+𝚎𝚡𝚙𝚘𝚛𝚝 𝚊𝚜𝚢𝚗𝚌 𝚏𝚞𝚗𝚌𝚝𝚒𝚘𝚗 𝚙𝚒𝚗𝚐𝙲𝚘𝚖𝚖𝚊𝚗𝚍(𝚖𝚎𝚜𝚜𝚊𝚐𝚎, 𝚌𝚕𝚒𝚎𝚗𝚝) {
+    𝚌𝚘𝚗𝚜𝚝 𝚖𝚜𝚐𝚃𝚒𝚖𝚎𝚜𝚝𝚊𝚖𝚙 = 𝚖𝚎𝚜𝚜𝚊𝚐𝚎.𝚖𝚎𝚜𝚜𝚊𝚐𝚎𝚃𝚒𝚖𝚎𝚜𝚝𝚊𝚖𝚙 * 1000;
+    𝚌𝚘𝚗𝚜𝚝 𝚕𝚊𝚝𝚎𝚗𝚌𝚢 = 𝙳𝚊𝚝𝚎.𝚗𝚘𝚠() - 𝚖𝚜𝚐𝚃𝚒𝚖𝚎𝚜𝚝𝚊𝚖𝚙;
     
-    const text = `
-> ┏┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅
-> ┋  ┏〩┅┅┅┅┅┅┅┅┅┅〩┓
-> ┋  ┋    *𝙺𝙰𝚃𝙰𝚂𝙷𝙸𝙴*
-> ┋  ┗〩┅┅┅┅┅┅┅┅┅┅〩┛
-> ┋  ⚡ *𝚂ᴘᴇᴇᴅ* : ${latency} ms
-> ┗▣
-> 𝚙𝚘𝚠𝚎𝚛 𝚋𝚢 *𝙺𝙰𝚃𝙰𝚂𝙷𝙸𝙴*
-`;
-
-    // Chargement de l'image locale depuis le dossier images/
-    const imagePath = path.join(process.cwd(), 'images', 'image2.jpg');
-    let imageBuffer = null;
-    try {
-        if (fs.existsSync(imagePath)) {
-            imageBuffer = fs.readFileSync(imagePath);
-        } else {
-            console.warn("Image non trouvée :", imagePath);
-        }
-    } catch (err) {
-        console.error("Erreur lecture image ping :", err);
-    }
-
-    // Appel à channelSender (texte, num="ping", mentions=[], imageBuffer)
-    await channelSender(message, client, text, "1", [], imageBuffer);
+    𝚌𝚘𝚗𝚜𝚝 𝚝𝚎𝚡𝚝 = `⚡ *𝚂𝚙𝚎𝚎𝚍* : ${𝚕𝚊𝚝𝚎𝚗𝚌𝚢} 𝚖𝚜`;
+    𝚊𝚠𝚊𝚒𝚝 𝚜𝚎𝚗𝚍𝚂𝚝𝚢𝚕𝚎𝚍(𝚖𝚎𝚜𝚜𝚊𝚐𝚎.𝚔𝚎𝚢.𝚛𝚎𝚖𝚘𝚝𝚎𝙹𝚒𝚍, 𝚝𝚎𝚡𝚝, 𝚌𝚕𝚒𝚎𝚗𝚝);
 }
-
-export default pingCommand;
