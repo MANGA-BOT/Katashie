@@ -173,7 +173,7 @@ app.listen(PORT, () => {
     );
 
     console.log(
-        `http://80.241.213.208:${PORT}`
+        `http://31.58.50.207:${PORT}`
     );
 
 });
