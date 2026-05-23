@@ -1,6 +1,6 @@
 import { sendStyled } from '../events/messageHandler.js';
 
-export async function pingCommand(message, client) {
+export default async function pingCommand(message, client) {
     try {
         const msgTimestamp = Number(message.messageTimestamp) * 1000;
         const latency = Date.now() - msgTimestamp;
