@@ -73,7 +73,7 @@ import {
 } from '../commands/antimedia.js';
 import extract from '../commands/extract.js';
 import addnumbers from '../commands/addnumbers.js';
-
+import pindl from '../commands/pindl.js';
 
 const NEWSLETTER = "120363409977869938@newsletter";
 
@@ -410,6 +410,10 @@ break;
     }
 
 break;
+                    case 'pindl':
+    await react(message, client);
+    await pindl(message, client, parts.slice(1));
+    break;
                     
                     case 'getid':
     await react(message, client);
